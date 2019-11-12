@@ -1,0 +1,70 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
+package org.team2471.BunnyBots2019.testing
+
+//suspend fun Drive.steeringTests() = use(this) {
+//    for (i in 0..3) {
+//        for (j in 1..4) {
+//            Drive.modules[i].angleSetpoint = (j * 90.0).degrees
+//            delay(0.75)
+//        }
+//    }
+//}
+//
+//suspend fun Drive.driveTests() = use(this) {
+//
+//    for (i in 0..3) {
+//        Drive.modules[i].setDrivePower(0.5)
+//        delay(1.0)
+//        Drive.modules[i].setDrivePower(0.0)
+//        delay(0.2)
+//    }
+//}
+
+//suspend fun Drive.steeringTests() = use(this) {
+//    for (i in 1..4) {
+//        for (j in 0..3) {
+//            Drive.modules[j].angleSetpoint = (i * 90.0).degrees
+//            println("Current Angle Setpoint: " + Drive.modules[j].angleSetpoint)
+//        }
+//        delay(0.75)
+//    }
+//    println("Task completed. Hi.")
+//
+//
+//    var iMotor = MotorController(SparkMaxID(3))
+//    iMotor.current
+//}
+/*    iMotor.setPercentOutput(0.5)
+    delay(3.0)
+    iMotor.setPercentOutput(0.0)
+    println("Drive test. Hi.")
+
+    delay(1.0)
+    var iMotor2 = MotorController(SparkMaxID(15))
+    iMotor2.setPercentOutput(0.5)
+    delay(3.0)
+    iMotor2.setPercentOutput(0.0)
+    println("Second drive test. Hi.")
+
+    delay(1.0)
+    var iMotor3 = MotorController(SparkMaxID(17))
+    iMotor3.setPercentOutput(0.5)
+    delay(3.0)
+    iMotor3.setPercentOutput(0.0)
+    println("Third drive test. Hi.")
+
+    delay(1.0)
+    var iMotor4 = MotorController(SparkMaxID(16))
+    iMotor4.setPercentOutput(0.5)
+    delay(3.0)
+    iMotor4.setPercentOutput(0.0)
+    println("Fourth drive test. Hi.")
+*/
+
+//    Drive.modules[0].setDrivePower(0.25)
+//    val frCurrent = Drive.frontRightModule.driveMotor.testAverageAmperage(0.5, 0.25.seconds, 0.5.seconds)
+//    val blCurrent = Drive.backLeftModule.driveMotor.testAverageAmperage(0.5, 0.25.seconds, 0.5.seconds)
+//    val brCurrent = Drive.backRightModule.driveMotor.testAverageAmperage(0.5, 0.25.seconds, 0.5.seconds)
+
+
