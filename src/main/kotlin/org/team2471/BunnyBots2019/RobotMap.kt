@@ -3,11 +3,6 @@
 package org.team2471.BunnyBots2019
 
 object Talons {
-    const val STEER_FRONTLEFT = 1
-    const val STEER_BACKLEFT = 2
-    const val STEER_BACKRIGHT = 13
-    const val STEER_FRONTRIGHT = 14
-
     const val ELEVATOR_MASTER = 6
     const val ELEVATOR_SLAVE = 9
 
@@ -22,6 +17,11 @@ object Sparks {
     const val DRIVE_BACKLEFT = 3
     const val DRIVE_BACKRIGHT = 17
     const val DRIVE_FRONTRIGHT = 15
+
+    const val STEER_FRONTLEFT = 1
+    const val STEER_BACKLEFT = 2
+    const val STEER_BACKRIGHT = 13
+    const val STEER_FRONTRIGHT = 14
 
     const val BALL_INTAKE = 4
 

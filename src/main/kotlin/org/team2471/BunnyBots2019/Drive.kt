@@ -26,37 +26,36 @@ private var gyroOffset = 0.0.degrees
 
 object Drive : Subsystem("Drive"), SwerveDrive {
 
+    /**
+     * Coordinates of modules
+     * **/
     override val modules: Array<SwerveDrive.Module> = arrayOf(
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_FRONTLEFT)),
-            MotorController(TalonID(Talons.STEER_FRONTLEFT)),
-            false,
+            MotorController(SparkMaxID(Sparks.STEER_FRONTLEFT)),
             Vector2(-7.0, 7.5),
-            0.0.degrees
+            (-135.0).degrees
         ),
 
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_FRONTRIGHT)),
-            MotorController(TalonID(Talons.STEER_FRONTRIGHT)),
-            false,
+            MotorController(SparkMaxID(Sparks.STEER_FRONTRIGHT)),
             Vector2(7.0, 7.5),
-            0.0.degrees
+            (-45.0).degrees
         ),
 
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_BACKLEFT)),
-            MotorController(TalonID(Talons.STEER_BACKLEFT)),
-            false,
+            MotorController(SparkMaxID(Sparks.STEER_BACKLEFT)),
             Vector2(-7.0, -7.5),
-            180.0.degrees // could get rid of isBack and set this to 180 degrees
+            135.0.degrees
         ),
 
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_BACKRIGHT)),
-            MotorController(TalonID(Talons.STEER_BACKRIGHT)),
-            false,
+            MotorController(SparkMaxID(Sparks.STEER_BACKRIGHT)),
             Vector2(7.0, -7.5),
-            180.0.degrees
+            45.0.degrees
         )
     )
 
@@ -89,18 +88,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         kdHeading = 0.005,
         kHeadingFeedForward = 0.00125
     )
-/*    val kdPosition = 0.15
-    val kpPosition = 0.3
-    val kHeadingFeedForward = 0.005
-    val kPositionFeedForward = 0.05
-
-    val positionXController = PDController(kpPosition, kdPosition)
-    val positionYController = PDController(kpPosition, kdPosition)
-    val headingController = PDController(0.004, 0.005)
-    var prevHeading = 0.0.degrees
-    var prevPosition = Vector2(0.0, 0.0)
-    */
-
 
     init {
         SmartDashboard.setPersistent("Use Gyro")
@@ -124,11 +111,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             val blSPEntry = table.getEntry("Back Left SP")
             val brSPEntry = table.getEntry("Back Right SP")
 
-            val flErrorEntry = table.getEntry("Front Left Error")
-            val frErrorEntry = table.getEntry("Front Right Error")
-            val blErrorEntry = table.getEntry("Back Left Error")
-            val brErrorEntry = table.getEntry("Back Right Error")
-
             periodic {
                 flAngleEntry.setDouble(modules[0].angle.asDegrees)
                    frAngleEntry.setDouble(modules[1].angle.asDegrees)
@@ -138,11 +120,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                    frSPEntry.setDouble(modules[1].speed)
                    blSPEntry.setDouble(modules[2].speed)
                    brSPEntry.setDouble(modules[3].speed)
-
-//                   flErrorEntry.setDouble(frontLeftModule.error.asDegrees)
-//                   frErrorEntry.setDouble(frontRightModule.error.asDegrees)
-//                   blErrorEntry.setDouble(FbackLeftModule.error.asDegrees)
-//                   brErrorEntry.setDouble(backRightModule.error.asDegrees)
 
                 val (x, y) = position
 
@@ -161,8 +138,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         val xEntry = limelightTable.getEntry("tx")
         val angleEntry = limelightTable.getEntry("ts")
         val table = NetworkTableInstance.getDefault().getTable(name)
-        val positionXEntry = table.getEntry("positionX")
-        val positionYEntry = table.getEntry("positionY")
 
         periodic {
             drive(
@@ -170,12 +145,9 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 OI.driveRotation,
                 if (Drive.gyro!=null) SmartDashboard.getBoolean("Use Gyro", true) && !DriverStation.getInstance().isAutonomous else false,
                 Vector2(0.0,0.0),
-                0.0)
-
-
-            //positionXEntry.setDouble(position.x)
-            //positionYEntry.setDouble(position.y)
-
+                0.0
+                // 0.3 // inputDamping
+            )
         }
     }
 
@@ -183,7 +155,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
     class Module(
         private val driveMotor: MotorController,
         private val turnMotor: MotorController,
-        isBack: Boolean,
         override val modulePosition: Vector2,
         override val angleOffset: Angle
     ) : SwerveDrive.Module {
@@ -217,23 +188,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         override var angleSetpoint = 0.degrees
-            set(value) {
-                field = value
-//
-//                val current = this.angle
-//                val error = (field - current).wrap()
-//                val turnPower = pdController.update(error.asDegrees)
-//                turnMotor.setPercentOutput(turnPower)
-
-//            println(
-//                "Angle: %.3f\tTarget: %.3f\tError: %.3f\tPower: %.3f".format(
-//                    current.asDegrees,
-//                    angle.asDegrees,
-//                    error.asDegrees,
-//                    turnPower
-//                )
-//            )
-            }
 
         override fun setDrivePower(power: Double) {
             driveMotor.setPercentOutput(power)
@@ -244,16 +198,24 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         init {
             turnMotor.config(20) {
+/* this was for talon srx
                 encoderType(FeedbackDevice.Analog)
                 encoderContinuous(false)
                 inverted(true)
                 sensorPhase(true)
                 currentLimit(30, 0, 0)
                 openLoopRamp(0.2)
+*/
+                // this was from lil bois bench test of swerve
+                feedbackCoefficient = 360.0 / 823.2
+                setRawOffsetBasedOnAnalogConfig()
+                inverted(true)
+                pid {
+                    p(0.000075)
+                    d(0.00025)
+                }
             }
             driveMotor.config {
-                inverted(isBack)
-//                sensorPhase(isBack)
                 coastMode() //brakeMode()
                 feedbackCoefficient = 1.0 / 6.125
                 currentLimit(30, 0, 0)
@@ -283,27 +245,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 }
             }
 
-//            GlobalScope.launch(MeanlibDispatcher) {
-//                val table = NetworkTableInstance.getDefault().getTable(name)
-//                val flAngleEntry = table.getEntry("Front Left Angle")
-//                val frAngleEntry = table.getEntry("Front Right Angle")
-//                val blAngleEntry = table.getEntry("Back Left Angle")
-//                val brAngleEntry = table.getEntry("Back Right Angle")
-//                val flSPEntry = table.getEntry("Front Left Speed")
-//                val frSPEntry = table.getEntry("Front Right Speed)
-//                val blSPEntry = table.getEntry("Back Left Speed")
-//                val brSPEntry = table.getEntry("Back Right Speed")
-//                periodic {
-//                    flAngleEntry.setDouble(modules[0].angle.asDegrees)
-//                    frAngleEntry.setDouble(modules[1].angle.asDegrees)
-//                    blAngleEntry.setDouble(modules[2].angle.asDegrees)
-//                    brAngleEntry.setDouble(modules[3].angle.asDegrees)
-//                    flSPEntry.setDouble(modules[0].setPoint.asDegrees)
-//                    frSPEntry.setDouble(modules[1].setPoint.asDegrees)
-//                    blSPEntry.setDouble(modules[2].setPoint.asDegrees)
-//                    brSPEntry.setDouble(modules[3].setPoint.asDegrees)
-//                }
-//            }
         }
 
         override fun driveWithDistance(angle: Angle, distance: Length) {

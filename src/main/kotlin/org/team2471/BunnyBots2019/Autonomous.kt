@@ -82,7 +82,7 @@ object AutoChooser {
             }, EntryListenerFlags.kImmediate or EntryListenerFlags.kNew or EntryListenerFlags.kUpdate)
     }
 
-    suspend fun autonomous() = use(Drive, Charm, name = "Autonomous") {
+    suspend fun autonomous() = use(Drive, name = "Autonomous") {
         val nearSide = sideChooser.selected
         startingSide = nearSide
 

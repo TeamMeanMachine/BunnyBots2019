@@ -1,10 +1,5 @@
 package org.team2471.BunnyBots2019
 
-import org.team2471.BunnyBots2019.Charm.extending
-import org.team2471.BunnyBots2019.Charm.isSetpointLow
-import org.team2471.BunnyBots2019.Voot.isExtending
-import org.team2471.BunnyBots2019.Voot.isLocked
-import org.team2471.BunnyBots2019.actions.*
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.input.*
 import org.team2471.frc.lib.math.Vector2
@@ -46,38 +41,8 @@ object OI {
     val operatorRightTrigger: Double
         get() = operatorController.rightTrigger
 
-
-    val testArm: Double
-        get() = operatorController.rightThumbstickX.deadband(deadBandOperator)
-
     init {
         driverController::back.whenTrue { Drive.zeroGyro() }
-        driverController::x.whenTrue { Charm.extending = !Charm.extending }
-        ({ driverController.leftTrigger > 0.1 }).whileTrue {
-            extending = true
-            visionDrive()
-        }
-        ({ driverController.dPad == Controller.Direction.DOWN }).toggleWhenTrue { suck() }
-        operatorController::y.whenTrue { isSetpointLow = false}
-        operatorController::a.whenTrue { isSetpointLow = true }
-        operatorController::start.whenTrue {
-            isExtending = true
-            delay(1.0)
-            isExtending = false
-        }
-        ({ Math.abs(operatorController.leftThumbstickY) > 0.1 }).whileTrue {
-            raise()
-        }
-        operatorController::rightBumper.whenTrue { intakeCargo() }
-        operatorController::leftBumper.whenTrue { intakeHatch() }
-        operatorController::x.whenTrue { isLocked = !isLocked}
-
-        }
-        //({operatorController.rightTrigger > 0.1}).whileTrue{ pullInCargoOrHatch() }
-        //({ operatorController.leftTrigger > 0.1}).whileTrue{ pushOutCargoOrHatch() }
-        //({ operatorController.rightTrigger <= 0.1 || operatorController.leftTrigger <= 0.1}).whileTrue{
-         //   intake(CARGO_HOLDING_INTAKE_POWER)
-         //   grabber(HATCH_HOLDING_INTAKE_POWER)
-        //}
     }
+}
 

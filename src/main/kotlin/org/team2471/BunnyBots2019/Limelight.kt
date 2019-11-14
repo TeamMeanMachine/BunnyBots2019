@@ -57,10 +57,7 @@ object Limelight : Subsystem("Limelight") {
     var isCamEnabled = false
         set(value) {
             field = value
-//            camModeEntry.setDouble(if (field) 0.0 else 1.0)
-//            ledModeEntry.setDouble(if (field) 0.0 else 1 .0)
             camModeEntry.setDouble(0.0)
-//            ledModeEntry.setDouble(0.0)
         }
 
     var ledEnabled = false
@@ -86,20 +83,10 @@ object Limelight : Subsystem("Limelight") {
 
     init {
         isCamEnabled = false
-//            camModeEntry.setDouble(0.0)
-//            ledModeEntry.setDouble(0.0)
     }
 
-    fun isAtTarget(): Boolean {
-        return useAutoPlaceEntry.value.boolean && area > when (Charm.angleSetpoint) {
-            Charm.LOW_ROCKET_ANGLE.degrees -> 1.0 //TODO: Fix these
-            Charm.CARGO_SHIP_ANGLE.degrees -> 2.0
-            else -> 1.0
-        }
-    }
 
     override fun reset() {
-//        isCamEnabled = false
     }
 }
 
@@ -139,33 +126,4 @@ suspend fun visionDrive() = use(Drive, Limelight, name = "Vision Drive") {
             SmartDashboard.getBoolean("Use Gyro", true) && !DriverStation.getInstance().isAutonomous)
     }
 }
-
-
-suspend fun autoVisionDrive() = use(Drive, Limelight, name = "Vision Drive") {
-
-    Limelight.isCamEnabled = true
-    var prevTargetHeading = Limelight.targetAngle
-    var prevTargetPoint = Limelight.targetPoint
-
-    val rotationPDController = PDController(0.01, 0.08)
-
-    periodic {
-        if (!Limelight.hasValidTarget) return@periodic // continue
-        // position error
-        val targetPoint = Limelight.targetPoint * 0.5 + prevTargetPoint * 0.5
-        val positionError = targetPoint - Drive.position
-        val translationControlField = positionError * 0.06
-        val robotHeading = heading
-        val targetHeading = if (Limelight.hasValidTarget) positionError.angle.radians else prevTargetHeading
-        val headingError = (targetHeading - robotHeading).wrap()
-        val turnControl = rotationPDController.update(headingError.asDegrees )
-
-        prevTargetPoint = targetPoint
-        // send it
-        Drive.drive(
-            translationControlField,
-            turnControl, true)
-    }
-}
-
 
