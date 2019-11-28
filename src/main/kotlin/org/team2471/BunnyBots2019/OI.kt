@@ -12,7 +12,7 @@ private val deadBandOperator = 0.1
 
 object OI {
     val driverController = XboxController(0)
-    val operatorController = XboxController(1)
+    //val operatorController = XboxController(1)
 
     private val driveTranslationX: Double
         get() = driverController.leftThumbstickX.deadband(deadBandDriver).squareWithSign()
@@ -27,19 +27,19 @@ object OI {
         get() = (driverController.rightThumbstickX.deadband(deadBandDriver)).cube() * 0.5 //changed from 0.6
 
     val driveLeftTrigger: Double
-        get() = driverController.leftTrigger
+        get() = 0.0 //driverController.leftTrigger
 
     val driveRightTrigger: Double
-        get() = driverController.rightTrigger
+        get() = 0.0 //driverController.rightTrigger
 
     val operatorLeftTrigger: Double
-        get() = operatorController.leftTrigger
+        get() = 0.0 //operatorController.leftTrigger
 
     val operatorLeftY: Double
-        get() = operatorController.leftThumbstickY.deadband(0.2)
+        get() = 0.0 //operatorController.leftThumbstickY.deadband(0.2)
 
     val operatorRightTrigger: Double
-        get() = operatorController.rightTrigger
+        get() = 0.0 //operatorController.rightTrigger
 
     init {
         driverController::back.whenTrue { Drive.zeroGyro() }

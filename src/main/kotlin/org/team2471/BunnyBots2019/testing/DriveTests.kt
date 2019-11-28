@@ -2,24 +2,32 @@
 
 package org.team2471.BunnyBots2019.testing
 
-//suspend fun Drive.steeringTests() = use(this) {
-//    for (i in 0..3) {
-//        for (j in 1..4) {
-//            Drive.modules[i].angleSetpoint = (j * 90.0).degrees
-//            delay(0.75)
-//        }
-//    }
-//}
+import org.team2471.BunnyBots2019.Drive
+import org.team2471.frc.lib.coroutines.delay
+import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.framework.use
+import org.team2471.frc.lib.math.round
+import org.team2471.frc.lib.units.degrees
+
+suspend fun Drive.steeringTests() = use(this) {
+    for (i in 0..3) {
+        for (j in 1..4) {
+            Drive.modules[i].angleSetpoint = (j * 90.0).degrees
+            delay(0.75)
+        }
+    }
+}
 //
-//suspend fun Drive.driveTests() = use(this) {
-//
-//    for (i in 0..3) {
-//        Drive.modules[i].setDrivePower(0.5)
-//        delay(1.0)
-//        Drive.modules[i].setDrivePower(0.0)
-//        delay(0.2)
-//    }
-//}
+
+suspend fun Drive.driveTests() = use(this) {
+
+    for (i in 0..3) {
+            Drive.modules[i].setDrivePower(0.5)
+            delay(1.0)
+            Drive.modules[i].setDrivePower(0.0)
+            delay(0.2)
+    }
+}
 
 //suspend fun Drive.steeringTests() = use(this) {
 //    for (i in 1..4) {

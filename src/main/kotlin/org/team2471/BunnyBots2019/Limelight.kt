@@ -108,7 +108,7 @@ suspend fun visionDrive() = use(Drive, Limelight, name = "Vision Drive") {
         val positionError = targetPoint - Drive.position
         prevTargetPoint = targetPoint
 
-        val translationControlField = positionError * 0.06 * OI.driverController.leftTrigger
+        val translationControlField = Vector2(0.0, 0.0) // positionError * 0.06 * OI.driverController.leftTrigger
 
         val robotHeading = heading
         val targetHeading = if (Limelight.hasValidTarget) positionError.angle.radians else prevTargetHeading
