@@ -6,6 +6,7 @@ import org.team2471.frc.lib.math.Vector2
 import org.team2471.frc.lib.math.cube
 import org.team2471.frc.lib.math.deadband
 import org.team2471.frc.lib.math.squareWithSign
+import org.team2471.frc.lib.units.degrees
 
 private val deadBandDriver = 0.1
 private val deadBandOperator = 0.1
@@ -43,6 +44,14 @@ object OI {
 
     init {
         driverController::back.whenTrue { Drive.zeroGyro() }
+        driverController::b.whenTrue {
+            println("YEET")
+            for (module in 0..3) {
+                val module = (Drive.modules[module] as Drive.Module)
+                module.turnMotor.setRawOffset(0.0.degrees)
+                module.driveMotor.setRawOffset(0.0.degrees)
+            }
+        }
     }
 }
 

@@ -4,6 +4,7 @@ package org.team2471.BunnyBots2019
 
 import edu.wpi.first.wpilibj.*
 import org.team2471.BunnyBots2019.testing.driveTests
+import org.team2471.BunnyBots2019.testing.fullTest
 import org.team2471.BunnyBots2019.testing.steeringTests
 import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
@@ -35,42 +36,27 @@ object Robot : RobotProgram {
         Drive.enable()
         Drive.zeroGyro()
         Limelight.enable()
+        Drive.initializeSteeringMotors()
     }
 
     override suspend fun autonomous() {
         Drive.zeroGyro()
-        //AutoChooser.autonomous()
     }
 
     override suspend fun teleop() {
     }
 
     override suspend fun test()  {
-       /* val mc = MotorController(SparkMaxID(Sparks.STEER_BACKRIGHT))
-        mc.setPercentOutput(0.5)
-        delay(1.0)
-        mc.setPercentOutput(0.0)*/
-//        Drive.driveTests()
-        Drive.steeringTests()
     }
 
     override suspend fun disable() {
         Drive.disable()
-        //Limelight.disable()
-        periodic {
-            for (i in 0 until Drive.modules.size) {
-                print("A=${(round(Drive.modules[i].angle.asDegrees, 1))}       ")
-            }
-            println("")
-        }
     }
 }
 
 fun main() {
     initializeWpilib()
     Drive
-    //OI
-    //AutoChooser
-
+    OI
     runRobotProgram(Robot)
 }

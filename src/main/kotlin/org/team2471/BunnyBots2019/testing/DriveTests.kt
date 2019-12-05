@@ -3,18 +3,21 @@
 package org.team2471.BunnyBots2019.testing
 
 import org.team2471.BunnyBots2019.Drive
+import org.team2471.BunnyBots2019.OI
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.round
+import org.team2471.frc.lib.motion.following.drive
+import org.team2471.frc.lib.motion.following.steerToAngle
 import org.team2471.frc.lib.units.degrees
 
 suspend fun Drive.steeringTests() = use(this) {
-    for (i in 0..3) {
-        for (j in 1..4) {
-            Drive.modules[i].angleSetpoint = (j * 90.0).degrees
-            delay(0.75)
+    for (quadrant in 0..8) {
+        for (module in 0..3) {
+            Drive.modules[module].angleSetpoint = (quadrant * 45.0).degrees
         }
+        delay(0.5)
     }
 }
 //
@@ -26,6 +29,17 @@ suspend fun Drive.driveTests() = use(this) {
             delay(1.0)
             Drive.modules[i].setDrivePower(0.0)
             delay(0.2)
+    }
+}
+
+suspend fun Drive.fullTest() = use(this) {
+    periodic {
+        // (i in 0..3) {
+         //   Drive.modules[i].setDrivePower(OI.driverController.leftThumbstickY)
+            //Drive.modules[i].(Math.atan2(OI.driverController.rightThumbstickY, OI.driverController.rightThumbstickX).degrees)
+        //}
+
+        Drive.drive(OI.driveTranslation, OI.driveRotation)
     }
 }
 

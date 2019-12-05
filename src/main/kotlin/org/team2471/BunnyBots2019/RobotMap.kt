@@ -22,22 +22,9 @@ object Sparks {
 
 }
 
-//object Victors {
-//    const val ELEVATOR_SLAVE = 5
-//    const val ARM_SLAVE = 9
-//
-//    const val ARM_INTAKE = 6
-//
-//    const val OB_CLIMB_ROLLERS = 10
-//
-//    const val LED_RING_LIGHT = 16
-//
-//    const val HATCH_GRABBER = -1
-//}
-
 object AnalogSensor {
     const val SWERVE_FRONT_LEFT = 3
-    const val SWERVE_BACK_RIGHT = 2
-    const val SWERVE_BACK_LEFT = 1
+    const val SWERVE_BACK_RIGHT = 1
+    const val SWERVE_BACK_LEFT = 2
     const val SWERVE_FRONT_RIGHT = 0
 }

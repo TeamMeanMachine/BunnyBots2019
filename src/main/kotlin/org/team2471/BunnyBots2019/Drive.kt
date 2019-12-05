@@ -6,9 +6,11 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.AnalogInput
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.team2471.BunnyBots2019.Sparks.STEER_BACKLEFT
 import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
 import org.team2471.frc.lib.actuators.SparkMaxWrapper
@@ -40,11 +42,9 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             MotorController(SparkMaxID(Sparks.DRIVE_FRONTLEFT)),
             MotorController(SparkMaxID(Sparks.STEER_FRONTLEFT)),
             Vector2(-7.0, 7.5),
-            (-310.0).degrees,
+            (-315.0).degrees,
             AnalogSensor.SWERVE_FRONT_LEFT
         ),
-
-
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_FRONTRIGHT)),
             MotorController(SparkMaxID(Sparks.STEER_FRONTRIGHT)),
@@ -52,27 +52,25 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             (-225.0).degrees,
             AnalogSensor.SWERVE_FRONT_RIGHT
         ),
-
-
-        Module(
-            MotorController(SparkMaxID(Sparks.DRIVE_BACKLEFT)),
-            MotorController(SparkMaxID(Sparks.STEER_BACKLEFT)),
-            Vector2(-7.0, -7.5),
-            (-133.0).degrees,
-            AnalogSensor.SWERVE_BACK_LEFT
-        ),
-
         Module(
             MotorController(SparkMaxID(Sparks.DRIVE_BACKRIGHT)),
             MotorController(SparkMaxID(Sparks.STEER_BACKRIGHT)),
             Vector2(7.0, -7.5),
-            (-47.0).degrees,
+            (-135.0).degrees,
             AnalogSensor.SWERVE_BACK_RIGHT
+        ),
+        Module(
+            MotorController(SparkMaxID(Sparks.DRIVE_BACKLEFT)),
+            MotorController(SparkMaxID(Sparks.STEER_BACKLEFT)),
+            Vector2(-7.0, -7.5),
+            (-45.0).degrees,
+            AnalogSensor.SWERVE_BACK_LEFT
         )
     )
 
-    //val gyro: Gyro? = null
-    val gyro: ADIS16448_IMU? = ADIS16448_IMU()
+    val gyro: Gyro? = null
+//    val gyro: ADIS16448_IMU? = ADIS16448_IMU()
+   // val gyro: NavxWrapper? = NavxWrapper()
 
     override var heading: Angle
         get() = gyroOffset - ((gyro?.angle ?: 0.0).degrees.wrap())
@@ -90,9 +88,10 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
     override var robotPivot = Vector2(0.0, 0.0)
 
+
     override val parameters: SwerveParameters = SwerveParameters(
         turningKP = 0.002,
-        gyroRateCorrection = 0.002,
+        gyroRateCorrection = 0.0, // 0.002,
         kpPosition = 0.3,
         kdPosition = 0.15,
         kPositionFeedForward = 0.05,
@@ -138,8 +137,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 xEntry.setDouble(x)
                 yEntry.setDouble(y)
                 headingEntry.setDouble(heading.asDegrees)
-
-//                println("Angle=${modules[0].angle}, Analog=${(modules[0] as Module).analogAngle.asDegrees}" )
             }
         }
     }
@@ -165,10 +162,16 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
     }
 
+    fun initializeSteeringMotors() {
+        for (module in 0..3) {
+            val module = (Drive.modules[module] as Module)
+            module.turnMotor.setRawOffset(module.analogAngle)
+        }
+    }
 
     class Module(
-        private val driveMotor: MotorController,
-        private val turnMotor: MotorController,
+        val driveMotor: MotorController,
+        val turnMotor: MotorController,
         override val modulePosition: Vector2,
         override val angleOffset: Angle,
         private val analogAnglePort: Int
@@ -177,17 +180,17 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             private const val ANGLE_MAX = 983
             private const val ANGLE_MIN = 47
 
-            private val P = 0.0 //0.0075 //0.010
-            private val D = 0.0 //0.00075
+            private val P = 0.0075 //0.010
+            private val D = 0.00075
         }
 
         override val angle: Angle
-            get() = turnMotor.position.degrees + angleOffset
+            get() = turnMotor.position.degrees
 
         private val analogAngleInput = AnalogInput(analogAnglePort)
 
         val analogAngle: Angle
-            get() = ((analogAngleInput.value - 170.0) / (3888.0-170.0) * 360.0).degrees
+            get() = ((analogAngleInput.value - 170.0) / (3888.0-170.0) * 360.0).degrees + angleOffset
 
         val driveCurrent: Double
             get() = driveMotor.current
@@ -206,8 +209,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             driveMotor.position = 0.0
         }
 
-        override var angleSetpoint: Angle = angle
-            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap() - angleOffset).asDegrees)
+        override var angleSetpoint: Angle = 0.0.degrees
+            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap()).asDegrees)
 
         override fun setDrivePower(power: Double) {
             driveMotor.setPercentOutput(power)
@@ -220,7 +223,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             turnMotor.config(20) {
                 // this was from lil bois bench test of swerve
                 feedbackCoefficient = 360.0 / 823.2
-                setRawOffsetConfig(analogAngle)
+                //setRawOffsetConfig(analogAngle)
                 inverted(true)
                 setSensorPhase(false)
                 pid {
@@ -245,8 +248,12 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                     setPersistent()
                     setDefaultDouble(0.00075)
                 }
-//                val pdController2 = PDController(pSwerveEntry.getDouble(0.0075),
-//                    dSwerveEntry.getDouble(0.00075))
+
+                periodic {
+                    val error = (angleSetpoint - angle).wrap()
+                    val turnPower = pdController.update(error.asDegrees)
+                    turnMotor.setPercentOutput(turnPower)
+                }
             }
         }
 
@@ -260,33 +267,5 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             driveMotor.stop()
             turnMotor.stop()
         }
-    }
-}
-
-suspend fun Drive.driveDistance(distance: Length, speed: Double) = use(Drive) {
-    // TODO: fix this
-    val initialPosition = position
-    periodic {
-        drive(Vector2(0.0, speed.withSign(distance.asInches)), 0.0, false)
-
-        val traveled = initialPosition.distance(position)
-        println("Position: $position, initial: $initialPosition, distance: $traveled")
-        if (traveled > distance.asFeet.absoluteValue) stop()
-    }
-}
-
-suspend fun Drive.driveTime(translation: Vector2, time: Time) = use(Drive) {
-    val timer = Timer().apply { start() }
-    periodic {
-        drive(translation, 0.0, false)
-        if (timer.get() > time.asSeconds) stop()
-    }
-}
-
-suspend fun Drive.turnToAngle(angle: Angle) = use(this){
-    val kTurn = 0.007
-    periodic {
-        val turnError = (angle - heading).wrap()
-        Drive.drive(Vector2(0.0,0.0), turnError.asDegrees * kTurn)
     }
 }
