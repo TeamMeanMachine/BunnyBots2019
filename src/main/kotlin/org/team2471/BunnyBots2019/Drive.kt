@@ -165,10 +165,16 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
     }
 
+    fun initializeSteeringMotors() {
+        for (module in 0..3) {
+            val module = (Drive.modules[module] as Module)
+            module.turnMotor.setRawOffset(module.analogAngle)
+        }
+    }
 
     class Module(
-        private val driveMotor: MotorController,
-        private val turnMotor: MotorController,
+        val driveMotor: MotorController,
+        val turnMotor: MotorController,
         override val modulePosition: Vector2,
         override val angleOffset: Angle,
         private val analogAnglePort: Int
@@ -206,12 +212,13 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             driveMotor.position = 0.0
         }
 
-        override var angleSetpoint: Angle = angle
+        override var angleSetpoint: Angle = 0.0.degrees
             set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap() - angleOffset).asDegrees)
 
         override fun setDrivePower(power: Double) {
             driveMotor.setPercentOutput(power)
         }
+
 
         val error: Angle
             get() = turnMotor.closedLoopError.degrees
@@ -247,6 +254,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 }
 //                val pdController2 = PDController(pSwerveEntry.getDouble(0.0075),
 //                    dSwerveEntry.getDouble(0.00075))
+
             }
         }
 
@@ -258,7 +266,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         override fun stop() {
             driveMotor.stop()
-            turnMotor.stop()
+            //turnMotor.stop()
         }
     }
 }

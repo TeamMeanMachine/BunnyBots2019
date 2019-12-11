@@ -35,6 +35,7 @@ object Robot : RobotProgram {
         Drive.enable()
         Drive.zeroGyro()
         Limelight.enable()
+        Drive.initializeSteeringMotors()
     }
 
     override suspend fun autonomous() {
