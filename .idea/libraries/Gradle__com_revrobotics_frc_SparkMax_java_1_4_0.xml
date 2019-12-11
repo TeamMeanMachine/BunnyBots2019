@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.revrobotics.frc:SparkMax-java:1.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.revrobotics.frc/SparkMax-java/1.4.0/61e1e19f0412da9d11ca603c06d61b1f704fd777/SparkMax-java-1.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.revrobotics.frc/SparkMax-java/1.4.0/2a2ea9031ba8b74e5ef0fcccfb1ba3589713d77b/SparkMax-java-1.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

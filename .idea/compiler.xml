@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="atlas2019.main" target="1.8" />
+      <module name="atlas2019.test" target="1.8" />
+      <module name="BunnyBots2019.main" target="1.8" />
+      <module name="BunnyBots2019.meanlib.main" target="1.8" />
+      <module name="BunnyBots2019.meanlib.test" target="1.8" />
+      <module name="BunnyBots2019.test" target="1.8" />
+      <module name="frc2019.main" target="1.8" />
+      <module name="FRC2019.main" target="1.8" />
+      <module name="FRC2019.meanlib.main" target="1.8" />
+      <module name="FRC2019.meanlib.test" target="1.8" />
+      <module name="frc2019.test" target="1.8" />
+      <module name="FRC2019.test" target="1.8" />
+      <module name="LilBoi2019Peak.main" target="1.8" />
+      <module name="LilBoi2019Peak.test" target="1.8" />
+      <module name="org.team2471.lib.meanlib.main" target="1.8" />
+      <module name="org.team2471.lib.meanlib.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
