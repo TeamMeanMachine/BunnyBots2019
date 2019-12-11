@@ -210,11 +210,14 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         override var angleSetpoint: Angle = 0.0.degrees
-            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap()).asDegrees)
+            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap() - angleOffset).asDegrees)
+        // Original from master prior to merging detached head
+        // set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap()).asDegrees)
 
         override fun setDrivePower(power: Double) {
             driveMotor.setPercentOutput(power)
         }
+
 
         val error: Angle
             get() = turnMotor.closedLoopError.degrees
@@ -248,12 +251,15 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                     setPersistent()
                     setDefaultDouble(0.00075)
                 }
-
+                /* Original from master prior to merging detached head
                 periodic {
                     val error = (angleSetpoint - angle).wrap()
                     val turnPower = pdController.update(error.asDegrees)
                     turnMotor.setPercentOutput(turnPower)
                 }
+                */
+//                val pdController2 = PDController(pSwerveEntry.getDouble(0.0075),
+//                    dSwerveEntry.getDouble(0.00075))
             }
         }
 
@@ -265,7 +271,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         override fun stop() {
             driveMotor.stop()
-            turnMotor.stop()
+            //turnMotor.stop()
         }
     }
 }

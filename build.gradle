@@ -10,7 +10,7 @@ def MAIN_CLASS = "org.team2471.BunnyBots2019.Main"
 deploy {
     targets {
         roboRIO("roborio") {
-            team = frc.getTeamNumber()
+            team = 2471//frc.getTeamNumber() //T H I S  I S  A  P R O B L E M
         }
     }
     artifacts {
