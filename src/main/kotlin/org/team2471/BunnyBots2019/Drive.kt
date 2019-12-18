@@ -1,33 +1,22 @@
 package org.team2471.BunnyBots2019
 
-import com.analog.adis16448.frc.ADIS16448_IMU
-import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.AnalogInput
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.team2471.BunnyBots2019.Sparks.STEER_BACKLEFT
 import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
-import org.team2471.frc.lib.actuators.SparkMaxWrapper
-import org.team2471.frc.lib.actuators.TalonID
 import org.team2471.frc.lib.control.PDController
 import org.team2471.frc.lib.coroutines.*
 import org.team2471.frc.lib.framework.Subsystem
-import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.Vector2
-import org.team2471.frc.lib.math.round
 import org.team2471.frc.lib.motion.following.SwerveDrive
 import org.team2471.frc.lib.motion.following.drive
 import org.team2471.frc.lib.motion_profiling.following.SwerveParameters
 import org.team2471.frc.lib.units.*
-import kotlin.math.absoluteValue
-import kotlin.math.truncate
-import kotlin.math.withSign
 
 private var gyroOffset = 0.0.degrees
 
@@ -68,9 +57,9 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         )
     )
 
-    val gyro: Gyro? = null
+//    val gyro: Gyro? = null
 //    val gyro: ADIS16448_IMU? = ADIS16448_IMU()
-   // val gyro: NavxWrapper? = NavxWrapper()
+    val gyro: NavxWrapper? = NavxWrapper()
 
     override var heading: Angle
         get() = gyroOffset - ((gyro?.angle ?: 0.0).degrees.wrap())
@@ -91,7 +80,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
     override val parameters: SwerveParameters = SwerveParameters(
         turningKP = 0.002,
-        gyroRateCorrection = 0.0, // 0.002,
+        gyroRateCorrection = 0.002,
         kpPosition = 0.3,
         kdPosition = 0.15,
         kPositionFeedForward = 0.05,
@@ -151,6 +140,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         val table = NetworkTableInstance.getDefault().getTable(name)
 
         periodic {
+            // println("DriveTranslation:${OI.driveTranslation}, DriveRotation: ${OI.driveRightTrigger}")
             drive(
                 OI.driveTranslation,
                 OI.driveRotation,
@@ -163,9 +153,10 @@ object Drive : Subsystem("Drive"), SwerveDrive {
     }
 
     fun initializeSteeringMotors() {
-        for (module in 0..3) {
-            val module = (Drive.modules[module] as Module)
+        for (moduleCount in 0..3) {
+            val module = (Drive.modules[moduleCount] as Module)
             module.turnMotor.setRawOffset(module.analogAngle)
+            println("Module: $module analogAngle: ${module.analogAngle}")
         }
     }
 
@@ -190,7 +181,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         private val analogAngleInput = AnalogInput(analogAnglePort)
 
         val analogAngle: Angle
-            get() = ((analogAngleInput.value - 170.0) / (3888.0-170.0) * 360.0).degrees + angleOffset
+            get() = (((analogAngleInput.value - 170.0) / (3888.0-170.0) * 360.0).degrees + angleOffset).wrap()
 
         val driveCurrent: Double
             get() = driveMotor.current
@@ -210,14 +201,13 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         override var angleSetpoint: Angle = 0.0.degrees
-            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap() - angleOffset).asDegrees)
+            //set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap() - angleOffset).asDegrees)
         // Original from master prior to merging detached head
-        // set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap()).asDegrees)
+            set(value) = turnMotor.setPositionSetpoint((angle + (value-angle).wrap()).asDegrees)
 
         override fun setDrivePower(power: Double) {
             driveMotor.setPercentOutput(power)
         }
-
 
         val error: Angle
             get() = turnMotor.closedLoopError.degrees

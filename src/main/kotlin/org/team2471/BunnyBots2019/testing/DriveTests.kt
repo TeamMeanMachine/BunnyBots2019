@@ -6,6 +6,7 @@ import org.team2471.BunnyBots2019.Drive
 import org.team2471.BunnyBots2019.OI
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.coroutines.suspendUntil
 import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.round
 import org.team2471.frc.lib.motion.following.drive
@@ -13,9 +14,10 @@ import org.team2471.frc.lib.motion.following.steerToAngle
 import org.team2471.frc.lib.units.degrees
 
 suspend fun Drive.steeringTests() = use(this) {
-    for (quadrant in 0..8) {
-        for (module in 0..3) {
+    for (module in 0..3) {
+        for (quadrant in 0..8) {
             Drive.modules[module].angleSetpoint = (quadrant * 45.0).degrees
+            delay(0.25)
         }
         delay(0.5)
     }

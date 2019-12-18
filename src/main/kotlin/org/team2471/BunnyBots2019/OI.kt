@@ -44,13 +44,22 @@ object OI {
 
     init {
         driverController::back.whenTrue { Drive.zeroGyro() }
+//        driverController::b.whenTrue {
+//            println("YEET")
+//            for (module in 0..3) {
+//                val module = (Drive.modules[module] as Drive.Module)
+//                module.turnMotor.setRawOffset(0.0.degrees)
+//                module.driveMotor.setRawOffset(0.0.degrees)
+//            }
+//        }
+
+
+        driverController::a.whenTrue {
+            animateToPose(Pose.START_POSE)
+        }
+
         driverController::b.whenTrue {
-            println("YEET")
-            for (module in 0..3) {
-                val module = (Drive.modules[module] as Drive.Module)
-                module.turnMotor.setRawOffset(0.0.degrees)
-                module.driveMotor.setRawOffset(0.0.degrees)
-            }
+            animateToPose(Pose.SCORING_POSE)
         }
     }
 }

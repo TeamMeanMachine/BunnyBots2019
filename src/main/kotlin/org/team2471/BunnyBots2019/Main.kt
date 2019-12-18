@@ -3,9 +3,7 @@
 package org.team2471.BunnyBots2019
 
 import edu.wpi.first.wpilibj.*
-import org.team2471.BunnyBots2019.testing.driveTests
-import org.team2471.BunnyBots2019.testing.fullTest
-import org.team2471.BunnyBots2019.testing.steeringTests
+import org.team2471.BunnyBots2019.testing.*
 import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
 import org.team2471.frc.lib.coroutines.delay
@@ -33,24 +31,39 @@ object Robot : RobotProgram {
     }
 
     override suspend fun enable() {
-        Drive.enable()
-        Drive.zeroGyro()
+//        Drive.enable()
+//        Drive.zeroGyro()
         Limelight.enable()
         Drive.initializeSteeringMotors()
+        Slurpy.enable()
+        Slurpy.resetShoulderAngle()
     }
 
     override suspend fun autonomous() {
-        Drive.zeroGyro()
+        //Drive.zeroGyro()
     }
 
     override suspend fun teleop() {
     }
 
     override suspend fun test()  {
+//        Drive.initializeSteeringMotors()
+//        Drive.steeringTests()
+//        Drive.driveTests()
+//        periodic {
+//            println("Angle= ${round(Drive.modules[2].angle.asDegrees,2)}, Analog= ${round((Drive.modules[2] as Drive.Module).analogAngle.asDegrees, 2)}")
+//        }
+        Slurpy.shoulderTest()
+        Slurpy.wristTest()
     }
 
     override suspend fun disable() {
         Drive.disable()
+        periodic {
+//            println("Angle= ${round(Drive.modules[2].angle.asDegrees,2)}, Analog= ${round((Drive.modules[2] as Drive.Module).analogAngle.asDegrees, 2)}")
+            println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
+        }
+        Slurpy.disable()
     }
 }
 
@@ -58,5 +71,6 @@ fun main() {
     initializeWpilib()
     Drive
     OI
+    Slurpy
     runRobotProgram(Robot)
 }
