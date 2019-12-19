@@ -3,7 +3,8 @@
 package org.team2471.BunnyBots2019
 
 object Talons {
-   // const val ELEVATOR_MASTER = 6
+    const val BINTAKE_INTAKE = 14
+    const val BINTAKE_ROTATION = 15
 
 }
 
@@ -18,7 +19,6 @@ object Sparks {
     const val STEER_BACKRIGHT = 11
     const val STEER_FRONTRIGHT = 4
 
-    const val BUCKET_INTAKE = 100
     const val ARM_MOVEMENT = 2
     const val WRIST_MOVEMENT = 3
     const val CUBE_INTAKE = 9

@@ -9,20 +9,21 @@ import org.team2471.frc.lib.units.degrees
 
 object Bintake : Subsystem("Bintake") {
 
-    val pivotMotor = MotorController(TalonID(21)).config {
-        encoderType(FeedbackDevice.Analog)
+    val pivotMotor = MotorController(TalonID(Talons.BINTAKE_ROTATION)).config {
+        encoderType(FeedbackDevice.CTRE_MagEncoder_Absolute)
         encoderContinuous(false)
         // rawOffset(-224)
-        sensorPhase(true)
-        feedbackCoefficient = 0.3502 // needs modification
+        sensorPhase(false)
+        inverted(false)
+        feedbackCoefficient = 1.0 // needs modification
     }
 
-    val intakeMotor = MotorController(TalonID(22)).config {
-
+    val intakeMotor = MotorController(TalonID(Talons.BINTAKE_INTAKE)).config {
     }
 
-    val angle: Angle
+    var angle: Angle
         get() = pivotMotor.position.degrees
+        set(value) = pivotMotor.setPositionSetpoint(value.asDegrees)
 
     fun intake(power: Double) {
         intakeMotor.setPercentOutput(power)

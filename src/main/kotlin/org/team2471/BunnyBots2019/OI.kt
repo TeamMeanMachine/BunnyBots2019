@@ -50,17 +50,26 @@ object OI {
 //                val module = (Drive.modules[module] as Drive.Module)
 //                module.turnMotor.setRawOffset(0.0.degrees)
 //                module.driveMotor.setRawOffset(0.0.degrees)
+
 //            }
 //        }
 
-
-        driverController::a.whenTrue {
+        driverController::rightBumper.whenTrue {
+                Slurpy.intakeCube()
+        }
+       /* driverController::a.whenTrue {
             animateToPose(Pose.START_POSE)
         }
 
         driverController::b.whenTrue {
             animateToPose(Pose.SCORING_POSE)
         }
+        driverController::x.whenTrue {
+            animateToPose(Pose.SAFETY_POSE)
+        }
+        driverController::y.whenTrue {
+            animateToPose(Pose.GROUND_POSE)
+        }*/
     }
 }
 

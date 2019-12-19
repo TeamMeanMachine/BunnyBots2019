@@ -31,12 +31,17 @@ object Robot : RobotProgram {
     }
 
     override suspend fun enable() {
-//        Drive.enable()
-//        Drive.zeroGyro()
+        Drive.enable()
+        Drive.zeroGyro()
         Limelight.enable()
         Drive.initializeSteeringMotors()
         Slurpy.enable()
         Slurpy.resetShoulderAngle()
+        Slurpy.prepareSlurpy()
+        Bintake.enable()
+        periodic {
+            //println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
+        }
     }
 
     override suspend fun autonomous() {
@@ -61,9 +66,11 @@ object Robot : RobotProgram {
         Drive.disable()
         periodic {
 //            println("Angle= ${round(Drive.modules[2].angle.asDegrees,2)}, Analog= ${round((Drive.modules[2] as Drive.Module).analogAngle.asDegrees, 2)}")
-            println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
+            //println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
+            println("Wrist Angle= ${round(Bintake.angle.asDegrees,2)}")
         }
         Slurpy.disable()
+        Bintake.disable()
     }
 }
 
