@@ -1,5 +1,6 @@
 package org.team2471.BunnyBots2019
 
+import org.team2471.BunnyBots2019.Bintake.animateToPose
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.input.*
 import org.team2471.frc.lib.math.Vector2
@@ -13,7 +14,7 @@ private val deadBandOperator = 0.1
 
 object OI {
     val driverController = XboxController(0)
-    //val operatorController = XboxController(1)
+    val operatorController = XboxController(1)
 
     private val driveTranslationX: Double
         get() = driverController.leftThumbstickX.deadband(deadBandDriver).squareWithSign()
@@ -55,21 +56,39 @@ object OI {
 //        }
 
         driverController::rightBumper.whenTrue {
-                Slurpy.intakeCube()
+            Slurpy.intakeCube()
+        }
+        operatorController::rightBumper.whenTrue {
+            Bintake.intakeBinCubes()
+        }
+        operatorController::leftBumper.whenTrue {
+            Slurpy.stealCube()
         }
        /* driverController::a.whenTrue {
-            animateToPose(Pose.START_POSE)
+            animateToPose(SlurpyPose.START_POSE)
         }
 
         driverController::b.whenTrue {
-            animateToPose(Pose.SCORING_POSE)
+            animateToPose(SlurpyPose.SCORING_POSE)
         }
         driverController::x.whenTrue {
-            animateToPose(Pose.SAFETY_POSE)
+            animateToPose(SlurpyPose.SAFETY_POSE)
         }
         driverController::y.whenTrue {
-            animateToPose(Pose.GROUND_POSE)
+            animateToPose(SlurpyPose.GROUND_POSE)
         }*/
+        operatorController::a.whenTrue {
+            animateToPose(BintakePose.SAFETY_POSE)
+        }
+        operatorController::b.whenTrue {
+            animateToPose(BintakePose.INTAKE_POSE)
+        }
+        operatorController::x.whenTrue {
+            animateToPose(BintakePose.SCORING_POSE)
+        }
+        operatorController::y.whenTrue {
+            animateToPose(BintakePose.SPITTING_POSE)
+        }
     }
 }
 
