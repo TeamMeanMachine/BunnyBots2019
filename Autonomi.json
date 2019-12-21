@@ -979,7 +979,7 @@
 			"m_mirrored": false,
 			"name": "1 Bin Auto",
 			"paths": {
-				"24 Foot Straight": {
+				"25 Foot Straight": {
 					"curveType": "EASE",
 					"m_easeCurve": {
 						"m_defaultValue": 0.0,
@@ -1093,11 +1093,11 @@
 								},
 								"m_prevAngleAndMagnitude": {
 									"x": 0.0,
-									"y": 1.9
+									"y": 1.9000000000000001
 								},
 								"m_prevSlopeMethod": "SLOPE_SMOOTH",
 								"m_prevTangent": {
-									"x": 0.032644168075776685,
+									"x": 0.03264416807577669,
 									"y": 23.75
 								}
 							},
@@ -1121,7 +1121,130 @@
 							}
 						}
 					},
-					"name": "24 Foot Straight",
+					"name": "25 Foot Straight",
+					"robotDirection": "FORWARD",
+					"scrubFactor": 1.12,
+					"speed": 1.0,
+					"trackWidth": 2.0833333333333335
+				},
+				"Find Other Bucket": {
+					"curveType": "EASE",
+					"m_easeCurve": {
+						"m_defaultValue": 0.0,
+						"m_headKey": {
+							"m_markBeginOrEndKeysToZeroSlope": true,
+							"m_nextAngleAndMagnitude": {
+								"x": 0.0,
+								"y": 1.0
+							},
+							"m_nextKey": {
+								"m_markBeginOrEndKeysToZeroSlope": true,
+								"m_nextAngleAndMagnitude": {
+									"x": 0.0,
+									"y": 1.0
+								},
+								"m_nextSlopeMethod": "SLOPE_FLAT",
+								"m_nextTangent": {
+									"x": 0.0,
+									"y": 0.0
+								},
+								"m_prevAngleAndMagnitude": {
+									"x": 0.0,
+									"y": 1.0
+								},
+								"m_prevSlopeMethod": "SLOPE_FLAT",
+								"m_prevTangent": {
+									"x": 2.5,
+									"y": 0.0
+								},
+								"m_timeAndValue": {
+									"x": 5.0,
+									"y": 1.0
+								}
+							},
+							"m_nextSlopeMethod": "SLOPE_FLAT",
+							"m_nextTangent": {
+								"x": 5.0,
+								"y": 0.0
+							},
+							"m_prevAngleAndMagnitude": {
+								"x": 0.0,
+								"y": 1.0
+							},
+							"m_prevSlopeMethod": "SLOPE_FLAT",
+							"m_prevTangent": {
+								"x": 0.0,
+								"y": 0.0
+							},
+							"m_timeAndValue": {
+								"x": 0.0,
+								"y": 0.0
+							}
+						},
+						"m_maxValue": 1.7976931348623157E308,
+						"m_minValue": -1.7976931348623157E308,
+						"m_postExtrapolation": "EXTRAPOLATION_CONSTANT",
+						"m_preExtrapolation": "EXTRAPOLATION_CONSTANT"
+					},
+					"m_headingCurve": {
+						"m_defaultValue": 0.0,
+						"m_maxValue": 1.7976931348623157E308,
+						"m_minValue": -1.7976931348623157E308,
+						"m_postExtrapolation": "EXTRAPOLATION_CONSTANT",
+						"m_preExtrapolation": "EXTRAPOLATION_CONSTANT"
+					},
+					"m_mirrored": false,
+					"m_xyCurve": {
+						"m_headPoint": {
+							"m_nextAngleAndMagnitude": {
+								"x": -62.91635109379561,
+								"y": 1.3741597585297554
+							},
+							"m_nextPoint": {
+								"m_nextAngleAndMagnitude": {
+									"x": 9.653786088536549,
+									"y": 1.9
+								},
+								"m_nextSlopeMethod": "SLOPE_SMOOTH",
+								"m_nextTangent": {
+									"x": 12.847875341074706,
+									"y": 0.0
+								},
+								"m_position": {
+									"x": 13.452833475438496,
+									"y": 22.760699551473117
+								},
+								"m_prevAngleAndMagnitude": {
+									"x": 9.653786088536549,
+									"y": 2.1647805930716038
+								},
+								"m_prevSlopeMethod": "SLOPE_SMOOTH",
+								"m_prevTangent": {
+									"x": 14.638332210821966,
+									"y": 4.440892098500626E-16
+								}
+							},
+							"m_nextSlopeMethod": "SLOPE_SMOOTH",
+							"m_nextTangent": {
+								"x": 2.7833448569872754,
+								"y": -8.865468803737244
+							},
+							"m_position": {
+								"x": 0.1202679876475983,
+								"y": 25.02861017568497
+							},
+							"m_prevAngleAndMagnitude": {
+								"x": -62.91635109379561,
+								"y": 1.9
+							},
+							"m_prevSlopeMethod": "SLOPE_SMOOTH",
+							"m_prevTangent": {
+								"x": 3.8484282452965686,
+								"y": -12.257956633166843
+							}
+						}
+					},
+					"name": "Find Other Bucket",
 					"robotDirection": "FORWARD",
 					"scrubFactor": 1.12,
 					"speed": 1.0,
@@ -1131,7 +1254,7 @@
 		}
 	},
 	"robotParameters": {
-		"robotLength": 3.0,
+		"robotLength": 2.6666666666666665,
 		"robotWidth": 2.3333333333333335
 	}
 }
