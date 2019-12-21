@@ -39,9 +39,7 @@ object Robot : RobotProgram {
         Drive.initializeSteeringMotors()
         Slurpy.enable()
         Slurpy.resetShoulderAngle()
-        Slurpy.prepareSlurpy()
         Bintake.enable()
-        Bintake.animateToPose(BintakePose.SAFETY_POSE)
         //periodic {
             //println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
         //}
@@ -49,6 +47,7 @@ object Robot : RobotProgram {
 
     override suspend fun autonomous() {
         //Drive.zeroGyro()
+        AutoChooser.autonomous()
     }
 
     override suspend fun teleop() {
@@ -72,7 +71,7 @@ object Robot : RobotProgram {
         periodic {
 //            println("Angle= ${round(Drive.modules[2].angle.asDegrees,2)}, Analog= ${round((Drive.modules[2] as Drive.Module).analogAngle.asDegrees, 2)}")
             //println("Arm= ${round(Slurpy.shoulderAngle.asDegrees,2)}  Arm= ${round(Slurpy.wristAngle.asDegrees,2)}")
-            println("Bintake Angle = ${round(Bintake.angle.asDegrees,2)}")
+            //println("Bintake Angle = ${round(Bintake.angle.asDegrees,2)}")
 
         }
         Slurpy.disable()
@@ -85,5 +84,6 @@ fun main() {
     Drive
     OI
     Slurpy
+    AutoChooser
     runRobotProgram(Robot)
 }

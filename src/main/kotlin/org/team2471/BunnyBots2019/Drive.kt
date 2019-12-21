@@ -79,13 +79,12 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
 
     override val parameters: SwerveParameters = SwerveParameters(
-        turningKP = 0.002,
-        gyroRateCorrection = 0.002,
+        gyroRateCorrection = 0.001,
         kpPosition = 0.3,
         kdPosition = 0.15,
         kPositionFeedForward = 0.05,
-        kpHeading = 0.0,//0.004,
-        kdHeading = 0.0,//0.005,
+        kpHeading = 0.004,
+        kdHeading = 0.005,
         kHeadingFeedForward = 0.00125
     )
 
@@ -226,7 +225,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             }
             driveMotor.config {
                 coastMode() //brakeMode()
-                feedbackCoefficient = 1.0 / 6.125
+                feedbackCoefficient = 1.0/282.0
                 currentLimit(30, 0, 0)
                 openLoopRamp(0.15)
             }

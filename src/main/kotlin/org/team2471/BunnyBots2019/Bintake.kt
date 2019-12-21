@@ -34,6 +34,9 @@ object Bintake : Subsystem("Bintake") {
     val intakeMotor = MotorController(TalonID(Talons.BINTAKE_INTAKE)).config {
     }
 
+    val current : Double
+        get() = intakeMotor.current
+
     var angle: Angle
         get() = pivotMotor.position.degrees
         set(value) = pivotMotor.setPositionSetpoint(value.asDegrees)
@@ -84,7 +87,7 @@ object Bintake : Subsystem("Bintake") {
 
     }
 
-    suspend fun intakeBinCubes() {
+    suspend fun intakeBinCubes() = use(Bintake) {
         try {
             animateToPose(BintakePose.INTAKE_POSE)
 
@@ -95,7 +98,7 @@ object Bintake : Subsystem("Bintake") {
                     this.stop()
                 }
             }
-            if (intakeMotor.current > 15.0) {
+            if (current > 15.0) {
                 intakeMotor.setPercentOutput(-1.0)
                 animateToPose(BintakePose.SCORING_POSE)
                 delay(0.5)

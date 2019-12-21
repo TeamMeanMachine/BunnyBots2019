@@ -5,6 +5,10 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import kotlinx.coroutines.coroutineScope
+import org.team2471.frc.lib.coroutines.delay
+import org.team2471.frc.lib.coroutines.parallel
+import org.team2471.frc.lib.coroutines.suspendUntil
 import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.motion.following.driveAlongPath
 import org.team2471.frc.lib.motion_profiling.Autonomi
@@ -48,6 +52,7 @@ object AutoChooser {
     private val autonomousChooser = SendableChooser<suspend () -> Unit>().apply {
         setDefaultOption("None", null)
         addOption("Tests", ::testAuto)
+        addOption("1 Bin Auto", ::oneBinAuto)
     }
 
     init {
@@ -97,6 +102,31 @@ object AutoChooser {
             val path = testAutonomous[testPath]
             Drive.driveAlongPath(path, true, 0.0)
         }
+    }
+
+    suspend fun oneBinAuto() = coroutineScope() {
+        val auto = autonomi["1 Bin Auto"]
+        try {
+            parallel({
+                Slurpy.prepareSlurpy()
+            }, {
+                Bintake.intake(-1.0)
+                Bintake.animateToPose(BintakePose.INTAKE_POSE)
+                suspendUntil{Bintake.current > 15.0}
+                Bintake.intakeMotor.setPercentOutput(-1.0)
+                Bintake.animateToPose(BintakePose.SCORING_POSE)
+                Bintake.intake(0.0)
+            }, {
+                Drive.driveAlongPath(auto["24 Foot Straight"], true)
+            })
+            delay(10.0)
+        } finally {
+            Bintake.animateToPose(BintakePose.SPITTING_POSE)
+            Bintake.intakeMotor.setPercentOutput(1.0)
+            Bintake.animateToPose(BintakePose.SAFETY_POSE)
+            Bintake.intakeMotor. setPercentOutput(0.0)
+        }
+
     }
 
 }

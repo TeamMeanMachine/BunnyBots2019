@@ -38,7 +38,7 @@ object OI {
         get() = 0.0 //operatorController.leftTrigger
 
     val operatorLeftY: Double
-        get() = 0.0 //operatorController.leftThumbstickY.deadband(0.2)
+        get() = operatorController.leftThumbstickY.deadband(0.2)
 
     val operatorRightTrigger: Double
         get() = 0.0 //operatorController.rightTrigger
@@ -56,7 +56,9 @@ object OI {
 //        }
 
         driverController::rightBumper.whenTrue {
-            Slurpy.intakeCube()
+            if (Slurpy.slurpyCurrentPose == SlurpyPose.SAFETY_POSE) {
+                Slurpy.intakeCube()
+            }
         }
         operatorController::rightBumper.whenTrue {
             Bintake.intakeBinCubes()
