@@ -53,6 +53,7 @@ object AutoChooser {
         setDefaultOption("None", null)
         addOption("Tests", ::testAuto)
         addOption("1 Bin Auto", ::oneBinAuto)
+        addOption("2 Bin Auto", ::twoBinAuto)
     }
 
     init {
@@ -117,7 +118,7 @@ object AutoChooser {
                 Bintake.animateToPose(BintakePose.SCORING_POSE)
                 Bintake.intake(0.0)
             }, {
-                Drive.driveAlongPath(auto["24 Foot Straight"], true)
+                pathThenVision(auto["24 Foot Straight"], 3.0, resetOdometry = true)
             })
             delay(10.0)
         } finally {
@@ -126,7 +127,32 @@ object AutoChooser {
             Bintake.animateToPose(BintakePose.SAFETY_POSE)
             Bintake.intakeMotor. setPercentOutput(0.0)
         }
+    }
 
+    suspend fun twoBinAuto() = coroutineScope() {
+        val auto = autonomi["1 Bin Auto"]
+        try {
+            parallel({
+                Slurpy.prepareSlurpy()
+            }, {
+                Bintake.intake(-1.0)
+                Bintake.animateToPose(BintakePose.INTAKE_POSE)
+                suspendUntil{Bintake.current > 15.0}
+                Bintake.intakeMotor.setPercentOutput(-1.0)
+                Bintake.animateToPose(BintakePose.SCORING_POSE)
+                Bintake.intake(0.0)
+            }, {
+                Drive.driveAlongPath(auto["24 Foot Straight"], true)
+                Bintake.animateToPose(BintakePose.SPITTING_POSE)
+                Bintake.intakeMotor.setPercentOutput(1.0)
+                Bintake.animateToPose(BintakePose.INTAKE_POSE)
+                Bintake.intakeMotor. setPercentOutput(0.0)
+            })
+
+            pathThenVision(auto["Find Other Bucket"], 3.0, resetOdometry = true)
+
+        } finally {
+        }
     }
 
 }

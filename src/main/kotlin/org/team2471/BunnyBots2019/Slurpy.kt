@@ -28,7 +28,6 @@ object Slurpy : Subsystem("Slurpy") {
             p(0.00000375) //0.000075
             d(0.0) //0.00025
         }
-        brakeMode()
     }
 
     val wristMotor = MotorController(SparkMaxID(Sparks.WRIST_MOVEMENT)).config(20) {
@@ -40,7 +39,6 @@ object Slurpy : Subsystem("Slurpy") {
             p(0.00000375) //0.000075
             d(0.0) //0.00025
         }
-        brakeMode()
     }
 
     var shoulderAngle: Angle

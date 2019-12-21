@@ -51,6 +51,7 @@ object Robot : RobotProgram {
     }
 
     override suspend fun teleop() {
+        Slurpy.prepareSlurpy()
     }
 
     override suspend fun test()  {

@@ -126,4 +126,3 @@ suspend fun visionDrive() = use(Drive, Limelight, name = "Vision Drive") {
             SmartDashboard.getBoolean("Use Gyro", true) && !DriverStation.getInstance().isAutonomous)
     }
 }
-
