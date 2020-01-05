@@ -5,6 +5,7 @@ import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.coroutines.suspendUntil
 import org.team2471.frc.lib.framework.Subsystem
 import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.round
@@ -14,7 +15,7 @@ import org.team2471.frc.lib.units.degrees
 import kotlin.math.absoluteValue
 
 object Slurpy : Subsystem("Slurpy") {
-    var shoulderStealAngle: Angle = SlurpyPose.STEAL_POSE.shoulderAngle
+    var shoulderStealAngle: Angle = SlurpyPose.HIGH_STEAL_POSE.shoulderAngle
     const val SHOULDER_OFFSET = -53.0
     const val WRIST_OFFSET = 48.0
     var slurpyCurrentPose = SlurpyPose.START_POSE
@@ -28,6 +29,7 @@ object Slurpy : Subsystem("Slurpy") {
             p(0.00000375) //0.000075
             d(0.0) //0.00025
         }
+        coastMode()
     }
 
     val wristMotor = MotorController(SparkMaxID(Sparks.WRIST_MOVEMENT)).config(20) {
@@ -39,6 +41,7 @@ object Slurpy : Subsystem("Slurpy") {
             p(0.00000375) //0.000075
             d(0.0) //0.00025
         }
+        coastMode()
     }
 
     var shoulderAngle: Angle
@@ -138,7 +141,7 @@ object Slurpy : Subsystem("Slurpy") {
 
             periodic {
                 val t = timer.get()
-                if (OI.driverController.rightBumper && t < 7.0) {
+                if (OI.driverController.rightBumper && t < 7.0 && !OI.operatorController.a) {
                     cubeIntakeMotor.setPercentOutput(0.5)
                 } else {
                     cubeIntakeMotor.setPercentOutput(0.0)
@@ -146,40 +149,50 @@ object Slurpy : Subsystem("Slurpy") {
                 }
             }
             animateToPose(SlurpyPose.SAFETY_POSE)
-            animateToPose(SlurpyPose.SCORING_POSE)
-            cubeIntakeMotor.setPercentOutput(-0.5)
-            delay(3.0)
+            suspendUntil(20, {OI.operatorController.a || OI.operatorController.b})
+            if (OI.operatorController.a) {
+                continueGroundIntake()
+            }
             println("end")
         } finally {
             println("finally")
             cubeIntakeMotor.setPercentOutput(0.0)
-            animateToPose(SlurpyPose.SAFETY_POSE)
+            animateToPose(SlurpyPose.SAFETY_POSE, 0.75)
 
         }
     }
 
     suspend fun stealCube() = use(Slurpy) {
         try {
-            animateToPose(SlurpyPose.SAFETY_POSE)
-            animateToPose(SlurpyPose(shoulderStealAngle, SlurpyPose.STEAL_POSE.wristAngle))
+            val shoulderToWristCurve = MotionCurve()
+
+            shoulderToWristCurve.storeValue(SlurpyPose.LOW_STEAL_POSE.shoulderAngle.asDegrees, SlurpyPose.LOW_STEAL_POSE.wristAngle.asDegrees)
+            shoulderToWristCurve.storeValue(SlurpyPose.HIGH_STEAL_POSE.shoulderAngle.asDegrees, SlurpyPose.HIGH_STEAL_POSE.wristAngle.asDegrees)
+
+            if (slurpyCurrentPose != SlurpyPose.SAFETY_POSE) {
+                (SlurpyPose.SAFETY_POSE)
+            }
+            animateToPose(SlurpyPose(shoulderStealAngle, shoulderToWristCurve.getValue(shoulderStealAngle.asDegrees).degrees))
             val timer = Timer()
 
             periodic {
                 if (!OI.driverController.rightBumper) {
                     shoulderStealAngle -= OI.operatorLeftY.degrees * 0.5
-                    //shoulderStealAngle = shoulderAngle.asDegrees.coerceIn(45.0, 120.0).degrees
                     if (shoulderStealAngle < (45.0).degrees) {
                         shoulderStealAngle = (45.0).degrees
                     } else if (shoulderStealAngle > (120.0).degrees) {
                         shoulderStealAngle = (120.0).degrees
                     }
 
+                    println("shoulder angle: $shoulderStealAngle wrist angle: ${shoulderToWristCurve.getValue(shoulderStealAngle.asDegrees).degrees}")
+
                     shoulderAngle = shoulderStealAngle
+                    wristAngle = shoulderToWristCurve.getValue(shoulderStealAngle.asDegrees).degrees
                 } else {
                     this.stop()
                 }
-                println("Shoulder Setpoint is ${round(shoulderStealAngle.asDegrees, 2)}, Right Thumbstick y is ${round(OI.operatorController.rightThumbstickY, 2)}, and current position is ${round(
-                    shoulderAngle.asDegrees, 2)}")
+//                println("Shoulder Setpoint is ${round(shoulderStealAngle.asDegrees, 2)}, Right Thumbstick y is ${round(OI.operatorController.rightThumbstickY, 2)}, and current position is ${round(
+//                    shoulderAngle.asDegrees, 2)}")
             }
 
             timer.start()
@@ -193,12 +206,19 @@ object Slurpy : Subsystem("Slurpy") {
                 }
             }
             animateToPose(SlurpyPose.SAFETY_POSE)
-            animateToPose(SlurpyPose.SCORING_POSE)
-            cubeIntakeMotor.setPercentOutput(-0.5)
-            delay(3.0)
+            suspendUntil(20, {OI.operatorController.a || OI.operatorController.b})
+            if (OI.operatorController.a) {
+                continueGroundIntake()
+            }
         } finally {
             cubeIntakeMotor.setPercentOutput(0.0)
             animateToPose(SlurpyPose.SAFETY_POSE)
         }
+    }
+
+    suspend fun continueGroundIntake() {
+        animateToPose(SlurpyPose.SCORING_POSE)
+        cubeIntakeMotor.setPercentOutput(-0.4)
+        delay(3.0)
     }
 }

@@ -6,6 +6,7 @@ import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.TalonID
 import org.team2471.frc.lib.coroutines.delay
 import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.coroutines.suspendUntil
 import org.team2471.frc.lib.framework.Subsystem
 import org.team2471.frc.lib.framework.use
 import org.team2471.frc.lib.math.round
@@ -13,6 +14,7 @@ import org.team2471.frc.lib.motion_profiling.MotionCurve
 import org.team2471.frc.lib.units.Angle
 import org.team2471.frc.lib.units.degrees
 import org.team2471.frc.lib.util.Timer
+import kotlin.concurrent.timer
 
 object Bintake : Subsystem("Bintake") {
 
@@ -89,21 +91,27 @@ object Bintake : Subsystem("Bintake") {
 
     suspend fun intakeBinCubes() = use(Bintake) {
         try {
-            animateToPose(BintakePose.INTAKE_POSE)
+            val timer = Timer()
+            timer.start()
 
+            animateToPose(BintakePose.INTAKE_POSE)
+            intakeMotor.setPercentOutput(-1.0)
+            delay(0.5)
             periodic {
-                if (OI.operatorController.rightBumper && intakeMotor.current < 15.0) {
+                if (OI.operatorController.rightBumper && intakeMotor.current < 40.0) {
                     intakeMotor.setPercentOutput(-1.0)
                 } else {
                     this.stop()
                 }
             }
-            if (current > 15.0) {
-                intakeMotor.setPercentOutput(-1.0)
+
+            if (current > 45.0 ) {
+                delay(0.5)
+                intakeMotor.setPercentOutput(-0.5)
                 animateToPose(BintakePose.SCORING_POSE)
                 delay(0.5)
                 animateToPose(BintakePose.SPITTING_POSE)
-                intakeMotor.setPercentOutput(1.0)
+                intakeMotor.setPercentOutput(0.5)
                 delay(1.0)
             }
         } finally {

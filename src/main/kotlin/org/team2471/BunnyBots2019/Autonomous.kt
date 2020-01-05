@@ -111,20 +111,21 @@ object AutoChooser {
             parallel({
                 Slurpy.prepareSlurpy()
             }, {
+                delay(2.5)
                 Bintake.intake(-1.0)
+                delay(0.25)
                 Bintake.animateToPose(BintakePose.INTAKE_POSE)
-                suspendUntil{Bintake.current > 15.0}
+                suspendUntil{Bintake.current > 40.0}
                 Bintake.intakeMotor.setPercentOutput(-1.0)
+                delay(0.25)
                 Bintake.animateToPose(BintakePose.SCORING_POSE)
                 Bintake.intake(0.0)
             }, {
-                pathThenVision(auto["24 Foot Straight"], 3.0, resetOdometry = true)
+                Drive.driveAlongPath(auto["25 Foot Straight"], true)
+//                pathThenVision(auto["25 Foot Straight"], 3.0, resetOdometry = true)
             })
             delay(10.0)
         } finally {
-            Bintake.animateToPose(BintakePose.SPITTING_POSE)
-            Bintake.intakeMotor.setPercentOutput(1.0)
-            Bintake.animateToPose(BintakePose.SAFETY_POSE)
             Bintake.intakeMotor. setPercentOutput(0.0)
         }
     }
@@ -142,7 +143,7 @@ object AutoChooser {
                 Bintake.animateToPose(BintakePose.SCORING_POSE)
                 Bintake.intake(0.0)
             }, {
-                Drive.driveAlongPath(auto["24 Foot Straight"], true)
+                Drive.driveAlongPath(auto["25 Foot Straight"], true)
                 Bintake.animateToPose(BintakePose.SPITTING_POSE)
                 Bintake.intakeMotor.setPercentOutput(1.0)
                 Bintake.animateToPose(BintakePose.INTAKE_POSE)

@@ -66,31 +66,31 @@ object OI {
         operatorController::leftBumper.whenTrue {
             Slurpy.stealCube()
         }
-       /* driverController::a.whenTrue {
-            animateToPose(SlurpyPose.START_POSE)
-        }
-
-        driverController::b.whenTrue {
-            animateToPose(SlurpyPose.SCORING_POSE)
-        }
+//        driverController::a.whenTrue {
+//            animateToPose(SlurpyPose.START_POSE)
+//        }
+//
+//        driverController::b.whenTrue {
+//            animateToPose(SlurpyPose.SCORING_POSE)
+//        }
         driverController::x.whenTrue {
-            animateToPose(SlurpyPose.SAFETY_POSE)
+            Slurpy.animateToPose(SlurpyPose.SAFETY_POSE)
         }
-        driverController::y.whenTrue {
-            animateToPose(SlurpyPose.GROUND_POSE)
-        }*/
-        operatorController::a.whenTrue {
-            animateToPose(BintakePose.SAFETY_POSE)
-        }
-        operatorController::b.whenTrue {
-            animateToPose(BintakePose.INTAKE_POSE)
-        }
-        operatorController::x.whenTrue {
-            animateToPose(BintakePose.SCORING_POSE)
-        }
-        operatorController::y.whenTrue {
-            animateToPose(BintakePose.SPITTING_POSE)
-        }
+//        driverController::y.whenTrue {
+//            animateToPose(SlurpyPose.GROUND_POSE)
+//        }
+//        operatorController::a.whenTrue {
+//            animateToPose(BintakePose.SAFETY_POSE)
+//        }
+//        operatorController::b.whenTrue {
+//            animateToPose(BintakePose.INTAKE_POSE)
+//        }
+//        operatorController::x.whenTrue {
+//            animateToPose(BintakePose.SCORING_POSE)
+//        }
+//        operatorController::y.whenTrue {
+//            animateToPose(BintakePose.SPITTING_POSE)
+//        }
     }
 }
 
